@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 import sys
 import math
-import datetime
+import datetime, time
 
 """
 This file cleans the data for the pet classification
@@ -61,6 +61,21 @@ def numerify_outcome(i, outcome_dict, data):
 def numerify_outcome_subtype(i, outcome_subtype_dict, data):
     data.Outcome_Subtype_Numeric[i] = outcome_subtype_dict[data.OutcomeSubtype.iloc[i]]
 
+def numerify_date(i, data):
+    date = data.DateTime[i].split()
+    month_day_year = date[0].split("-")
+    print(month_day_year)
+    minutes_seconds = date[1].split(":")
+    print(minutes_seconds)
+    month = int(month_day_year[1])
+    day = int(month_day_year[2])
+    year = int(month_day_year[0])
+    minutes = int(minutes_seconds[0])
+    seconds = int(minutes_seconds[1])
+    date = datetime.datetime(year, month, day, minutes, seconds)
+    seconds = time.mktime(date.timetuple())
+    data["DateTime_Numeric"][i] = seconds 
+    
 
 def reassign_color(i, data):
      colors = data.Color[i].split("/")
@@ -110,6 +125,8 @@ def main():
         dummies = pd.get_dummies(train[column])
         train[dummies.columns] = dummies
     train["Named"] = [0 for i in range(train.shape[0])]
+     #Create numeric variables for strings
+    train["DateTime_Numeric"] = [float(0) for i in range(train.shape[0])]
     train["AgeuponOutcome_Numeric"] = [float(0) for i in range(train.shape[0])]
     #Create new columns for dummy variables and 
     add_color_columns(train)
@@ -119,6 +136,7 @@ def main():
     outcomes_subtype_dict = get_outcomes_subtype_dict(train)
     #Reassign colors, breeds, and named to dummy variables in one pass over the data
     for i in range(10):
+        numerify_date(i, train)
         numerify_outcome(i, outcomes_dict, train)
         numerify_outcome_subtype(i, outcomes_subtype_dict, train)
         reassign_color(i, train)
