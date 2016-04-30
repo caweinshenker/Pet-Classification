@@ -64,9 +64,7 @@ def numerify_outcome_subtype(i, outcome_subtype_dict, data):
 def numerify_date(i, data):
     date = data.DateTime[i].split()
     month_day_year = date[0].split("-")
-    print(month_day_year)
     minutes_seconds = date[1].split(":")
-    print(minutes_seconds)
     month = int(month_day_year[1])
     day = int(month_day_year[2])
     year = int(month_day_year[0])
@@ -85,6 +83,8 @@ def reassign_color(i, data):
 
 def reassign_breed(i, data):
     breeds  = data.Breed[i].split("/")
+    if len(breeds) > 1:
+        data.Mix[i] = 1
     for breed in breeds:
         breed = breed.split()
         if breed[-1] == "Mix":
@@ -112,7 +112,6 @@ def numerify_age(i, data):
         age = age/12
     elif age_list[1].lower() == "days" or age_list[1].lower() == "day":
         age = age/365
-    print(age)
     data.AgeuponOutcome_Numeric[i] = age
     
 def main():
@@ -135,7 +134,7 @@ def main():
     outcomes_dict = get_outcomes_dict(train)
     outcomes_subtype_dict = get_outcomes_subtype_dict(train)
     #Reassign colors, breeds, and named to dummy variables in one pass over the data
-    for i in range(10):
+    for i in range(train.shape[0]):
         numerify_date(i, train)
         numerify_outcome(i, outcomes_dict, train)
         numerify_outcome_subtype(i, outcomes_subtype_dict, train)
