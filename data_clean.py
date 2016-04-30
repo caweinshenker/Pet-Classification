@@ -9,7 +9,8 @@ import numpy as np
 import pandas as pd
 import sys
 import math
-import time
+import datetime
+
 """
 This file cleans the data for the pet classification
 by creating binary variables for all the base classification features,
@@ -89,13 +90,13 @@ def assign_named(i, data):
 def numerify_age(i, data):
     """Standardize ages as a continous variable with years as the unit"""
     age_list = data.AgeuponOutcome[i].split()
-    age = int(age_list[0])
+    age = float(age_list[0])
     if age_list[1].lower() == "weeks" or age_list[1].lower() == "week":
-        age = float(age/52)
+        age = age/52
     elif age_list[1].lower() == "months" or age_list[1].lower() == "months":
-        age = float(age/12)
+        age = age/12
     elif age_list[1].lower() == "days" or age_list[1].lower() == "day":
-        age = float(age/365)
+        age = age/365
     print(age)
     data.AgeuponOutcome_Numeric[i] = age
     
@@ -109,7 +110,7 @@ def main():
         dummies = pd.get_dummies(train[column])
         train[dummies.columns] = dummies
     train["Named"] = [0 for i in range(train.shape[0])]
-    train["AgeuponOutcome_Numeric"] = [0 for i in range(train.shape[0])]
+    train["AgeuponOutcome_Numeric"] = [float(0) for i in range(train.shape[0])]
     #Create new columns for dummy variables and 
     add_color_columns(train)
     add_breed_columns(train)
@@ -118,7 +119,6 @@ def main():
     outcomes_subtype_dict = get_outcomes_subtype_dict(train)
     #Reassign colors, breeds, and named to dummy variables in one pass over the data
     for i in range(10):
-        print(i)
         numerify_outcome(i, outcomes_dict, train)
         numerify_outcome_subtype(i, outcomes_subtype_dict, train)
         reassign_color(i, train)
