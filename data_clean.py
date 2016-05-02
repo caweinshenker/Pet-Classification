@@ -7,6 +7,7 @@ Created on Thu Apr 28 12:37:15 2016
 
 import pandas as pd
 import datetime, time
+import sys
 
 """
 This file cleans the data for the pet classification
