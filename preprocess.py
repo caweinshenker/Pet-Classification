@@ -29,13 +29,24 @@ for i in x_test.keys():
         new_keys.append(i)
         train[i] = [0 for i in range(train.shape[0])]
       
-      
-      
+#Assign the missing breeds      
 for i in range(train.shape[0]):
     if train.Breed[i] in new_keys:
         new_breed = train.Breed[i]
         train.new_breed = 1
+    
+#Create dummy columns for outcome types        
+for column in ['OutcomeType']: 
+        dummies = pd.get_dummies(train[column])
+        train[dummies.columns] = dummies
+
+#Assign dummies for outcomes
+for i in range(train.shape[0]):
+    outcome = train.OutcomeType[i]
+    train[outcome][i] = 1
+
         
-train.to_csv("train_preprocessed_knn.csv")
-test.to_csv("test_preprocessed_knn.csv")
+        
+train.to_csv("train_preprocessed.csv")
+test.to_csv("test_preprocessed.csv")
     
