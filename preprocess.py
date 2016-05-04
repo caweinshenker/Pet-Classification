@@ -5,6 +5,12 @@ Created on Mon May  2 00:58:17 2016
 @author: cweinshenker
 """
 
+"""
+This file applies some additional preprocessing to the training and test sets.
+This file must be run AFTER data_clean.py has already been applied.
+It runs separately from data_clean.py for the sole reason that that file
+can take several hours to run.
+"""
 
 import pandas as pd
 
